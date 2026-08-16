@@ -1,0 +1,12 @@
+{
+  "appId": "bd.adpay.app",
+  "appName": "AdPay BD",
+  "webDir": "www",
+  "bundledWebRuntime": false,
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": true
+  }
+}
