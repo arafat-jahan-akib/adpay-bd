@@ -10,6 +10,8 @@ This is still a **UX prototype** — there is no backend. All data (balances, us
 ├── www/index.html              ← the entire app (React + Tailwind, loaded from CDN, single file)
 ├── capacitor.config.json       ← Capacitor app config (app id, name, web folder)
 ├── package.json                ← Node dependencies (Capacitor CLI + Android runtime)
+├── android-icons/              ← pre-generated app icon at every required Android density
+├── icon-source.png             ← the source crop of the AdPay BD logo mark used to generate the icons
 ├── .github/workflows/build-apk.yml   ← builds a debug APK automatically on every push
 └── .gitignore
 ```
@@ -70,6 +72,19 @@ then rebuild. If you're using the GitHub Action, just commit and push — it re-
 
 - **App ID:** `bd.adpay.app` (set in `capacitor.config.json`) — this is the unique package identifier Android uses. Change it before any real release if you plan to publish, since it can't be changed again after your first Play Store upload.
 - **App name:** `AdPay BD`
+- **App icon:** the blue-and-gold "A" play-button mark from the AdPay BD logo, on a navy (`#000D2B`) background. Pre-generated at every Android density (mdpi through xxxhdpi) plus a modern adaptive icon (separate foreground/background layers so it displays correctly whether a device masks icons as circles, squircles, or otherwise) — all in `android-icons/`. The GitHub Actions workflow copies these into the generated native project automatically on every build, right after `npx cap add android` creates it — you don't need to do anything manually.
+
+  If you build locally instead of via GitHub Actions, copy them in yourself after running `npx cap add android`:
+  ```bash
+  RES=android/app/src/main/res
+  cp android-icons/values/ic_launcher_background.xml "$RES/values/"
+  cp android-icons/mipmap-anydpi-v26/*.xml "$RES/mipmap-anydpi-v26/"
+  for d in mdpi hdpi xhdpi xxhdpi xxxhdpi; do
+    cp android-icons/mipmap-$d/*.png "$RES/mipmap-$d/"
+  done
+  npx cap sync android
+  ```
+  To swap in a different icon later, replace `icon-source.png` (ideally a clean square crop, ~450×450px+) and regenerate the density set, or just edit the PNGs under `android-icons/` directly at each size.
 
 ## Release build (signed, for Play Store)
 
@@ -90,4 +105,4 @@ Keep the keystore file and its passwords safe and private — losing it means yo
 - No backend — balances, users, campaigns, and Facebook share submissions are all mock/static data in `www/index.html`.
 - The Facebook Share task's link-based verification is manual (admin review), not automated — there's no real Facebook API integration.
 - bKash withdrawal and SSLCommerz/payment integration points are UI-only stubs.
-- App icon and splash screen use Capacitor's defaults — swap them via `npx cap` asset tooling or by replacing files under `android/app/src/main/res/` once the platform is generated.
+- Splash screen still uses Capacitor's default — only the app icon has been customized so far.
