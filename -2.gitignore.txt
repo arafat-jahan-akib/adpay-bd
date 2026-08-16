@@ -1,0 +1,24 @@
+# Node
+node_modules/
+npm-debug.log*
+
+# Capacitor generated native project (created by `npx cap add android`)
+android/app/build/
+android/build/
+android/.gradle/
+android/local.properties
+android/captures/
+android/.idea/
+android/*.iml
+android/app/release/
+android/app/debug/
+
+# Build outputs
+*.apk
+*.aab
+
+# OS/editor cruft
+.DS_Store
+Thumbs.db
+.vscode/
+*.log
